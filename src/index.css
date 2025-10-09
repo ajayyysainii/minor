@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* Apple SF Pro Font Stack - Using system fonts for best performance */
+
+/* Global Apple-style improvements */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', sans-serif;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+  min-height: 100vh;
+}
+
+/* Apple-style focus states */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Apple-style smooth transitions */
+* {
+  transition: all 0.2s ease-in-out;
+}
