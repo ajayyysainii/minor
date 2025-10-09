@@ -8,6 +8,8 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
+  const [selectedCleanItem, setSelectedCleanItem] = useState(null)
+  const [showDetailPopup, setShowDetailPopup] = useState(false)
 
   useEffect(() => {
     fetchSolarData()
@@ -48,6 +50,16 @@ function App() {
     setTimeout(() => {
       setShowSuccessPopup(false)
     }, 1000)
+  }
+
+  const handleCleanItemClick = (item) => {
+    setSelectedCleanItem(item)
+    setShowDetailPopup(true)
+  }
+
+  const closeDetailPopup = () => {
+    setShowDetailPopup(false)
+    setSelectedCleanItem(null)
   }
 
 
@@ -177,7 +189,7 @@ function App() {
                   </div>
                 ) : solarData.length > 0 ? (
                   solarData.slice(0, 5).map((item) => (
-                    <div key={item._id} className="w-full p-5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-lg hover:bg-white/10 transition-all duration-200 flex justify-between items-center">
+                    <div key={item._id} className="w-full p-5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-lg hover:bg-white/10 transition-all duration-200 flex justify-between items-center cursor-pointer" onClick={() => handleCleanItemClick(item)}>
                       <div className="flex flex-col items-start gap-1">
                         <div className="text-white text-base md:text-lg font-semibold font-['-apple-system',_'BlinkMacSystemFont',_'SF_Pro_Display',_'Helvetica_Neue',_'Segoe_UI',_'Roboto',_'sans-serif']">
                           {formatDate(item.runTime)}
@@ -218,6 +230,81 @@ function App() {
                   Data has been updated
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Detail Popup */}
+      {showDetailPopup && selectedCleanItem && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" onClick={closeDetailPopup}>
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl p-6 mx-4 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-col gap-6">
+              {/* Header */}
+              <div className="flex justify-between items-center">
+                <div className="text-white text-xl font-semibold font-['-apple-system',_'BlinkMacSystemFont',_'SF_Pro_Display',_'Helvetica_Neue',_'Segoe_UI',_'Roboto',_'sans-serif']">
+                  Cleaning Session Details
+                </div>
+                <button 
+                  onClick={closeDetailPopup}
+                  className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-200"
+                >
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="space-y-4">
+                {/* Device Information */}
+                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                  <div className="text-gray-400 text-sm font-medium mb-2">Device Information</div>
+                  <div className="text-white text-lg font-semibold">{selectedCleanItem.espId}</div>
+                </div>
+
+                {/* Battery Status */}
+                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                  <div className="text-gray-400 text-sm font-medium mb-2">Battery Status</div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-white text-2xl font-bold">{selectedCleanItem.battery}%</div>
+                    <div className="flex-1 bg-gray-700 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          selectedCleanItem.battery > 50 ? 'bg-green-400' : 
+                          selectedCleanItem.battery > 20 ? 'bg-yellow-400' : 'bg-red-400'
+                        }`}
+                        style={{ width: `${selectedCleanItem.battery}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Run Time */}
+                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                  <div className="text-gray-400 text-sm font-medium mb-2">Run Time</div>
+                  <div className="text-white text-lg font-semibold">{formatDate(selectedCleanItem.runTime)}</div>
+                  <div className="text-gray-400 text-sm mt-1">
+                    {new Date(selectedCleanItem.runTime).toLocaleString()}
+                  </div>
+                </div>
+
+                {/* Estimated Runtime */}
+                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                  <div className="text-gray-400 text-sm font-medium mb-2">Estimated Runtime Remaining</div>
+                  <div className="text-white text-lg font-semibold">
+                    {Math.floor(selectedCleanItem.battery / 15)} minutes
+                  </div>
+                </div>
+              </div>
+
+              {/* Close Button */}
+              <button 
+                onClick={closeDetailPopup}
+                className="w-full py-3 bg-blue-500/20 hover:bg-blue-500/30 rounded-xl border border-blue-500/30 transition-all duration-200"
+              >
+                <div className="text-blue-400 font-medium">Close</div>
+              </button>
             </div>
           </div>
         </div>
