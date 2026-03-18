@@ -2,6 +2,7 @@ import './App.css'
 import { ChevronRight, RefreshCw } from 'lucide-react'
 import imageUrl from './assets/image.png'
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 function App() {
   const [solarData, setSolarData] = useState([])
@@ -68,7 +69,7 @@ function App() {
     <>
       <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4 md:p-6 lg:p-8">
         <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
-          <div className="mb-8">
+          <div className="mb-8 text-center">
             <div className="text-white text-xl md:text-2xl lg:text-3xl font-semibold font-['-apple-system',_'BlinkMacSystemFont',_'SF_Pro_Display',_'Helvetica_Neue',_'Segoe_UI',_'Roboto',_'sans-serif'] tracking-tight">Solar Panel Cleaner</div>
             <div className="text-gray-400 text-sm md:text-base font-normal font-['-apple-system',_'BlinkMacSystemFont',_'SF_Pro_Text',_'Helvetica_Neue',_'Segoe_UI',_'Roboto',_'sans-serif'] mt-1">Advanced cleaning system for optimal efficiency</div>
           </div>
@@ -79,9 +80,9 @@ function App() {
                   <div className="px-4 md:px-6 py-2 bg-white/10 backdrop-blur-sm rounded-xl shadow-lg flex justify-center items-center">
                     <div className="text-white text-sm md:text-base lg:text-lg font-medium font-['-apple-system',_'BlinkMacSystemFont',_'SF_Pro_Text',_'Helvetica_Neue',_'Segoe_UI',_'Roboto',_'sans-serif']">Cleaner</div>
                   </div>
-                  <div className="pl-3 pr-4 md:pr-6 py-2 rounded-xl flex justify-center items-center hover:bg-white/5 transition-all duration-200">
+                  <Link to="/solar-panel" className="pl-3 pr-4 md:pr-6 py-2 rounded-xl flex justify-center items-center hover:bg-white/5 transition-all duration-200">
                     <div className="text-gray-300 text-sm md:text-base lg:text-lg font-normal font-['-apple-system',_'BlinkMacSystemFont',_'SF_Pro_Text',_'Helvetica_Neue',_'Segoe_UI',_'Roboto',_'sans-serif']">Solar Panel</div>
-                  </div>
+                  </Link>
                 </div>
                 <div className="relative w-full max-w-sm md:max-w-md lg:max-w-lg">
                   <img className="w-full h-auto rounded-2xl shadow-2xl border border-gray-700/20" src={imageUrl} alt="Solar Panel" />
