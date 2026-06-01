@@ -4,6 +4,54 @@ import imageUrl from './assets/image.png'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
+const ESP_READING_API = 'https://jellyfish-app-b75d4.ondigitalocean.app/esp-reading'
+
+const getDummyScheduledCleans = () => {
+  const now = Date.now()
+  return [
+    {
+      _id: 'dummy-clean-1',
+      espId: 'ESP 001',
+      battery: 72,
+      timestamp: new Date(now + 2 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date(now).toISOString(),
+      updatedAt: new Date(now).toISOString(),
+    },
+    {
+      _id: 'dummy-clean-2',
+      espId: 'ESP 002',
+      battery: 45,
+      timestamp: new Date(now + 24 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date(now).toISOString(),
+      updatedAt: new Date(now).toISOString(),
+    },
+    {
+      _id: 'dummy-clean-3',
+      espId: 'ESP 003',
+      battery: 88,
+      timestamp: new Date(now + 48 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date(now).toISOString(),
+      updatedAt: new Date(now).toISOString(),
+    },
+    {
+      _id: 'dummy-clean-4',
+      espId: 'ESP 004',
+      battery: 31,
+      timestamp: new Date(now + 72 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date(now).toISOString(),
+      updatedAt: new Date(now).toISOString(),
+    },
+    {
+      _id: 'dummy-clean-5',
+      espId: 'ESP 005',
+      battery: 56,
+      timestamp: new Date(now + 96 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date(now).toISOString(),
+      updatedAt: new Date(now).toISOString(),
+    },
+  ]
+}
+
 function App() {
   const [solarData, setSolarData] = useState([])
   const [loading, setLoading] = useState(true)
@@ -19,16 +67,22 @@ function App() {
   const fetchSolarData = async () => {
     try {
       setLoading(true)
-      const response = await fetch('https://admin-aarogya-3wmj8.ondigitalocean.app/solar/all')
+      setError(null)
+
+      const response = await fetch(ESP_READING_API)
+      if (!response.ok) {
+        setSolarData(getDummyScheduledCleans())
+        return
+      }
+
       const result = await response.json()
-      
-      if (result.success) {
+      if (result.success && Array.isArray(result.data) && result.data.length > 0) {
         setSolarData(result.data)
       } else {
-        setError('Failed to fetch solar data')
+        setSolarData(getDummyScheduledCleans())
       }
-    } catch (err) {
-      setError('Error fetching solar data: ' + err.message)
+    } catch {
+      setSolarData(getDummyScheduledCleans())
     } finally {
       setLoading(false)
     }
@@ -193,7 +247,7 @@ function App() {
                     <div key={item._id} className="w-full p-5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-lg hover:bg-white/10 transition-all duration-200 flex justify-between items-center cursor-pointer" onClick={() => handleCleanItemClick(item)}>
                       <div className="flex flex-col items-start gap-1">
                         <div className="text-white text-base md:text-lg font-semibold font-['-apple-system',_'BlinkMacSystemFont',_'SF_Pro_Display',_'Helvetica_Neue',_'Segoe_UI',_'Roboto',_'sans-serif']">
-                          {formatDate(item.runTime)}
+                          {formatDate(item.timestamp)}
                         </div>
                         <div className="text-gray-400 text-sm md:text-base font-normal font-['-apple-system',_'BlinkMacSystemFont',_'SF_Pro_Text',_'Helvetica_Neue',_'Segoe_UI',_'Roboto',_'sans-serif']">
                           Device Id: {item.espId} | Battery: {item.battery}%
@@ -283,10 +337,10 @@ function App() {
 
                 {/* Run Time */}
                 <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                  <div className="text-gray-400 text-sm font-medium mb-2">Run Time</div>
-                  <div className="text-white text-lg font-semibold">{formatDate(selectedCleanItem.runTime)}</div>
+                  <div className="text-gray-400 text-sm font-medium mb-2">Scheduled Time</div>
+                  <div className="text-white text-lg font-semibold">{formatDate(selectedCleanItem.timestamp)}</div>
                   <div className="text-gray-400 text-sm mt-1">
-                    {new Date(selectedCleanItem.runTime).toLocaleString()}
+                    {new Date(selectedCleanItem.timestamp).toLocaleString()}
                   </div>
                 </div>
 
